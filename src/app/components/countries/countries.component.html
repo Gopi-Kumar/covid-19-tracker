@@ -1,1 +1,17 @@
-<p>countries works!</p>
+<div class="jumbotron bg-white text-center p-0 m-0">
+    <h1 class="display-4">Corona Covid-19 Tracker Country Wise</h1>
+    <hr>
+    <div class="mx-auto">
+        <div class="form-group col-lg-5 mx-auto">
+            <label for="c">Select Country</label>
+            <select name="" id="c" class="form-control" #input (change)='updateValue(input.value)'>
+                <option value="{{con}}" *ngFor='let con of countries'>
+                    {{con}}
+                </option>
+              
+            </select>
+        </div>
+    </div>
+    <app-dashboard-card [totalConfirmed] = 'totalConfirmed' [totalActive] = 'totalActive'
+[totalRecovered] = 'totalRecovered' [totalDeaths] = 'totalDeaths'></app-dashboard-card>
+</div>
