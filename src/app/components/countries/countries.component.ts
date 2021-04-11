@@ -19,31 +19,55 @@ export class CountriesComponent implements OnInit {
   selectedContryData : DateWiseData[];
   dateWiseData;
   loading = true;
+  option : {
+    height : 500, 
+    animation:{
+      duration: 1000,
+      easing: 'out',
+    },
+  }
   constructor(private service: DataServiceService) { }
 
   ngOnInit(): void {
-    // merge(
-    //   this.service.getDateWiseData().pipe(map(result => {
-
-    //   })),
-    // ),
-    this.service.getGlobalData().subscribe(result => {
-      console.log("get global data called")
-      this.data = result;
-      this.data.forEach(cs => {
-        this.countries.push(cs.country)
-      });
+    merge(
+      this.service.getDateWiseData().pipe(
+        map(result => {
+          this.dateWiseData = result;
+        })
+      ),
+      this.service.getGlobalData().pipe(map(result => {
+        this.data = result;
+        this.data.forEach(cs => {
+          this.countries.push(cs.country)
+        })
+      }))
+    ).subscribe({
+      complete : ()=>{
+        this.updateValues('India');
+        this.loading = false;
+      }
     })
   }
-  updateValue(country:string){
-      this.data.forEach(cs => {
-        if(cs.country == country){
-          this.totalActive = cs.active;
-          this.totalDeaths = cs.deaths;
-          this.totalRecovered = cs.recovered;
-          this.totalConfirmed = cs.confirmed;
-        }
+
+  updateChart(){
+    let datatable = [];
+      datatable.push("Date", 'Cases[]');
+      this.selectedContryData.forEach(cs => {
+        datatable.push([cs.date, cs.cases])
       })
+  }
+   
+  updateValues(country : string){
+    this.data.forEach(cs => {
+      if(cs.country == country){
+        this.totalActive = cs.active
+        this.totalDeaths = cs.deaths
+        this.totalRecovered = cs.recovered
+        this.totalConfirmed = cs.confirmed
+      }
+    })
+    this.selectedContryData = this.dateWiseData[country];
+    this.updateChart();
   }
 
 }
